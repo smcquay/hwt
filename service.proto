@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package me.mcquay.hwt;
+
+option go_package = "hwt";
+
+service HelloWorld {
+  rpc Hello(HelloReq) returns (HelloResp);
+}
+
+message HelloReq {
+  string subject = 1;
+}
+
+message HelloResp {
+  string text = 1;
+}
