@@ -19,3 +19,8 @@ service.pb.go: service.proto
 
 vendor: Gopkg.toml Gopkg.lock service.twirp.go service.pb.go
 	dep ensure
+
+.PHONY: clean
+clean:
+	@rm -f service.{twirp,pb}.go
+	@rm -rf vendor
