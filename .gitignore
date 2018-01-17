@@ -1,3 +1,3 @@
-service.pb.go
-service.twirp.go
+hwt.pb.go
+hwt.twirp.go
 vendor
