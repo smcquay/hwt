@@ -3,26 +3,26 @@ rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst 
 
 default: ${GOPATH}/bin/hwtd ${GOPATH}/bin/hwtc
 	
-${GOPATH}/bin/hwtd: vendor $(call rwildcard,,*.go) hwt.go
+${GOPATH}/bin/hwtd: $(call rwildcard,,*.go) hwt.go vendor
 	@go install -v mcquay.me/hwt/cmd/hwtd
 
-${GOPATH}/bin/hwtc: vendor $(call rwildcard,,*.go) hwt.go
+${GOPATH}/bin/hwtc: $(call rwildcard,,*.go) hwt.go vendor
 	@go install -v mcquay.me/hwt/cmd/hwtc
 
-hwt.go: hwt.twirp.go hwt.pb.go
+hwt.go: rpc/hwt/service.twirp.go rpc/hwt/service.pb.go
 
-hwt.twirp.go: hwt.proto
+rpc/hwt/service.twirp.go: rpc/hwt/service.proto
 	@echo "generating twirp file"
-	@protoc --proto_path=${GOPATH}/src:. --twirp_out=. --go_out=. ./hwt.proto
+	@protoc --proto_path=${GOPATH}/src:. --twirp_out=. --go_out=. rpc/hwt/service.proto
 
-hwt.pb.go: hwt.proto
+rpc/hwt/service.pb.go: rpc/hwt/service.proto
 	@echo "generating pb file"
-	@protoc --proto_path=${GOPATH}/src:. --twirp_out=. --go_out=. ./hwt.proto
+	@protoc --proto_path=${GOPATH}/src:. --twirp_out=. --go_out=. rpc/hwt/service.proto
 
-vendor: Gopkg.toml Gopkg.lock hwt.twirp.go hwt.pb.go
+vendor: Gopkg.toml Gopkg.lock
 	dep ensure
 
 .PHONY: clean
 clean:
-	@rm -f hwt.{twirp,pb}.go
+	@rm -f rpc/hwt/service.{twirp,pb}.go
 	@rm -rf vendor

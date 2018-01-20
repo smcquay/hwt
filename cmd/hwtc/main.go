@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"mcquay.me/hwt"
+	pb "mcquay.me/hwt/rpc/hwt"
 )
 
 const usage = "hwtc [subject]"
@@ -18,9 +18,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	c := hwt.NewHelloWorldProtobufClient("http://localhost:8080", &http.Client{})
+	c := pb.NewHelloWorldProtobufClient("http://localhost:8080", &http.Client{})
 
-	resp, err := c.Hello(context.Background(), &hwt.HelloReq{Subject: strings.Join(os.Args[1:], " ")})
+	resp, err := c.Hello(context.Background(), &pb.HelloReq{Subject: strings.Join(os.Args[1:], " ")})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "hello: %v\n", err)
 		os.Exit(1)
