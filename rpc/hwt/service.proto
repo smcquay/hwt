@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package me.mcquay.hwt;
+package mcquay.hwt.hwt;
 
 option go_package = "hwt";
 
