@@ -17,8 +17,13 @@ func (s *Server) Hello(ctx context.Context, req *pb.HelloReq) (*pb.HelloResp, er
 		return nil, twirp.RequiredArgumentError("subject")
 	}
 
+	u, err := getUser(ctx)
+	if err != nil {
+		return nil, twirp.InternalErrorWith(err)
+	}
+
 	r := &pb.HelloResp{
-		Text:     fmt.Sprintf("echo: %v", req.Subject),
+		Text:     fmt.Sprintf("%s said: %v", u, req.Subject),
 		Hostname: s.Hostname,
 	}
 	return r, nil

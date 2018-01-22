@@ -26,7 +26,7 @@ func main() {
 	hs := hwt.NewMetricsHooks(metrics.HTTPLatency)
 	th := pb.NewHelloWorldServer(s, hs)
 	sm := http.NewServeMux()
-	sm.Handle("/", th)
+	sm.HandleFunc("/", hwt.Auth(th.ServeHTTP))
 	sm.Handle("/metrics", promhttp.Handler())
 	if err := http.ListenAndServe(":8080", sm); err != nil {
 		log.Fatalf("listen and serve: %v", err)
