@@ -20,10 +20,12 @@ func main() {
 
 	c := pb.NewHelloWorldProtobufClient(fmt.Sprintf("http://%s", os.Args[1]), &http.Client{})
 
-	resp, err := c.Hello(context.Background(), &pb.HelloReq{Subject: strings.Join(os.Args[2:], " ")})
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "hello: %v\n", err)
-		os.Exit(1)
+	for i := 0; ; i++ {
+		resp, err := c.Hello(context.Background(), &pb.HelloReq{Subject: strings.Join(os.Args[2:], " ")})
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "hello: %#v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("0x%08x: %#v\n", i, resp)
 	}
-	fmt.Printf("%v\n", resp)
 }
