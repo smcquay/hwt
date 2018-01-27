@@ -32,12 +32,17 @@ func main() {
 		os.Exit(1)
 	}
 
+	s := make(chan bool, 10)
 	for i := 0; ; i++ {
-		resp, err := c.Hello(ctx, &pb.HelloReq{Subject: strings.Join(os.Args[2:], " ")})
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "hello: %#v\n", err)
-			os.Exit(1)
-		}
-		fmt.Printf("0x%08x: %#v\n", i, resp)
+		s <- true
+		go func(j int) {
+			resp, err := c.Hello(ctx, &pb.HelloReq{Subject: strings.Join(os.Args[2:], " ")})
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "hello: %#v\n", err)
+				os.Exit(1)
+			}
+			fmt.Printf("0x%08x: %#v\n", j, resp)
+			<-s
+		}(i)
 	}
 }
