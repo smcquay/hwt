@@ -29,6 +29,13 @@ func (s *Server) Hello(ctx context.Context, req *pb.HelloReq) (*pb.HelloResp, er
 		time.Sleep(rest)
 	}
 
+	switch rand.Int() % 100 {
+	case 0:
+		return nil, twirp.NewError(twirp.Internal, "bleeding")
+	case 1:
+		return nil, twirp.NewError(twirp.ResourceExhausted, "some exhaustion")
+	}
+
 	r := &pb.HelloResp{
 		Text:     fmt.Sprintf("%s said: %v", u, req.Subject),
 		Hostname: s.Hostname,
