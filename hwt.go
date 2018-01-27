@@ -3,6 +3,8 @@ package hwt
 import (
 	"context"
 	fmt "fmt"
+	"go/src/math/rand"
+	"time"
 
 	"github.com/twitchtv/twirp"
 	pb "mcquay.me/hwt/rpc/hwt"
@@ -20,6 +22,11 @@ func (s *Server) Hello(ctx context.Context, req *pb.HelloReq) (*pb.HelloResp, er
 	u, err := getUser(ctx)
 	if err != nil {
 		return nil, twirp.InternalErrorWith(err)
+	}
+
+	if rand.Int()%100 == 0 {
+		rest := time.Duration(rand.Intn(50)) * time.Millisecond
+		time.Sleep(rest)
 	}
 
 	r := &pb.HelloResp{
