@@ -23,7 +23,7 @@ func main() {
 	}
 
 	s := &hwt.Server{hn}
-	hs := hwt.NewMetricsHooks(metrics.HTTPLatency)
+	hs := hwt.NewMetricsHooks(metrics.HTTPLatency, metrics.HTTPCode)
 	th := pb.NewHelloWorldServer(s, hs)
 	sm := http.NewServeMux()
 	sm.HandleFunc("/", hwt.Auth(th.ServeHTTP))

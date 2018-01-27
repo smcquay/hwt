@@ -10,8 +10,9 @@ import (
 var reqStartKey = new(int)
 
 type Timer func(path string, dur time.Duration)
+type Statuser func(path, status string)
 
-func NewMetricsHooks(timer Timer) *twirp.ServerHooks {
+func NewMetricsHooks(timer Timer, status Statuser) *twirp.ServerHooks {
 	hs := &twirp.ServerHooks{}
 
 	hs.RequestReceived = func(ctx context.Context) (context.Context, error) {
@@ -31,6 +32,12 @@ func NewMetricsHooks(timer Timer) *twirp.ServerHooks {
 		}
 		dur := time.Now().Sub(start)
 		timer(name, dur)
+
+		sc, ok := twirp.StatusCode(ctx)
+		if !ok {
+			panic("missing code")
+		}
+		status(name, sc)
 	}
 
 	return hs

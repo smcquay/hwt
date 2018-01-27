@@ -21,11 +21,22 @@ var (
 		},
 		[]string{"path"},
 	)
+
+	httpStatus = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "hwt_http_requests_total",
+			Help: "How many HTTP requests processed, partitioned by status code and HTTP method.",
+		},
+		[]string{"path", "code"},
+	)
 )
 
 func RegisterPromMetrics() error {
 	if err := prometheus.Register(httpReqLat); err != nil {
 		return errors.Wrap(err, "registering http request latency")
+	}
+	if err := prometheus.Register(httpStatus); err != nil {
+		return errors.Wrap(err, "registering http request status")
 	}
 	return nil
 }
