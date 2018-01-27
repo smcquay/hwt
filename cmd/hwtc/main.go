@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/twitchtv/twirp"
 
@@ -36,12 +38,18 @@ func main() {
 	for i := 0; ; i++ {
 		s <- true
 		go func(j int) {
-			resp, err := c.Hello(ctx, &pb.HelloReq{Subject: strings.Join(os.Args[2:], " ")})
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "hello: %#v\n", err)
-				os.Exit(1)
+			sleep := time.Duration(250+rand.Intn(500)) * time.Millisecond
+			for {
+				resp, err := c.Hello(ctx, &pb.HelloReq{Subject: strings.Join(os.Args[2:], " ")})
+				if err == nil {
+					fmt.Printf("0x%08x: %#v\n", j, resp)
+					break
+				}
+				fmt.Fprintf(os.Stderr, "sleeping %v because: %v\n", sleep, err)
+				time.Sleep(sleep)
+				sleep *= 2
+				continue
 			}
-			fmt.Printf("0x%08x: %#v\n", j, resp)
 			<-s
 		}(i)
 	}
